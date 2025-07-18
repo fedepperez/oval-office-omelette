@@ -71,17 +71,10 @@ function resetGame() {
   eggCounter.textContent = `Eggsecutive Order x${eggCount}`;
   eggMessage.style.opacity = 0;
   splash.style.opacity = 0;
-
   gameContainer.style.display = "none";
   splashScreen.style.display = "flex";
-
-  // Ferma del tutto l'audio
-  bgm.pause();
   bgm.currentTime = 0;
-
-  // 🔁 Reset della gif
-  trump.src = "";
-  trump.src = "trump.gif";
+  bgm.play().catch(() => { });
 }
 
 // Mute toggle (audio in sync)

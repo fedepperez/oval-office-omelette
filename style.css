@@ -81,6 +81,7 @@ body {
   width: 80vw;
   max-width: 600px;
   height: auto;
+  margin-bottom: 2vh;
 }
 
 #splash {
@@ -153,7 +154,15 @@ body {
 
   #reset-button,
   #audio-toggle {
+    bottom: 4rem;
     font-size: 3.5vw;
     padding: 6px 10px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #trump {
+    width: 90vw;
+    max-width: none;
   }
 }
