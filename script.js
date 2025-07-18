@@ -10,14 +10,20 @@ const resetBtn = document.getElementById("reset-button");
 const audioToggle = document.getElementById("audio-toggle");
 
 let eggCount = 0;
+let gameStarted = false;
+let lastTouchTime = 0;
 
 // Avvio gioco
 function startGame() {
   splashScreen.style.display = "none";
   gameContainer.style.display = "block";
-  bgm.play().catch(e => console.warn("Audio bloccato:", e));
+  gameStarted = true;
 
-  // Posiziona il messaggio subito sotto Trump
+  bgm.currentTime = 0;
+  if (!bgm.muted) {
+    bgm.play().catch(e => console.warn("Audio bloccato:", e));
+  }
+
   positionEggMessage();
 }
 
@@ -28,6 +34,7 @@ window.addEventListener("resize", () => {
   }
 });
 
+// Posiziona #egg-message 1vh sotto la GIF
 function positionEggMessage() {
   const trumpRect = trump.getBoundingClientRect();
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -38,7 +45,17 @@ function positionEggMessage() {
 
 // Gestione click/touch sul gioco
 function handleEgg(event) {
-  if (splashScreen.style.display !== "none") return;
+  if (!gameStarted) return;
+
+  // Ignora click su bottoni
+  if (
+    event.target === resetBtn ||
+    event.target === audioToggle ||
+    resetBtn.contains(event.target) ||
+    audioToggle.contains(event.target)
+  ) {
+    return;
+  }
 
   const x = event.clientX || (event.touches && event.touches[0].clientX);
   const y = event.clientY || (event.touches && event.touches[0].clientY);
@@ -60,6 +77,7 @@ function handleEgg(event) {
     x >= rect.left && x <= rect.right &&
     y >= rect.top && y <= rect.bottom
   ) {
+    positionEggMessage();
     eggMessage.style.opacity = 1;
     setTimeout(() => eggMessage.style.opacity = 0, 800);
   }
@@ -73,8 +91,12 @@ function resetGame() {
   splash.style.opacity = 0;
   gameContainer.style.display = "none";
   splashScreen.style.display = "flex";
+  gameStarted = false;
+
+  bgm.pause();
   bgm.currentTime = 0;
-  bgm.play().catch(() => { });
+  trump.src = ""; // reset GIF
+  trump.src = "trump.gif";
 }
 
 // Mute toggle (audio in sync)
@@ -86,13 +108,26 @@ function toggleAudio() {
 // Eventi
 splashScreen.addEventListener("click", startGame);
 splashScreen.addEventListener("touchstart", startGame);
-document.addEventListener("click", handleEgg);
-document.addEventListener("touchstart", handleEgg);
+
+// Gestione click/touch normale
+document.addEventListener("touchstart", (e) => {
+  lastTouchTime = new Date().getTime();
+  handleEgg(e);
+}, { passive: true });
+
+document.addEventListener("click", (e) => {
+  const now = new Date().getTime();
+  if (now - lastTouchTime < 500) return;
+  handleEgg(e);
+});
+
+// Bottoni
 resetBtn.addEventListener("click", resetGame);
 resetBtn.addEventListener("touchstart", (e) => {
   e.preventDefault();
   resetGame();
 });
+
 audioToggle.addEventListener("click", toggleAudio);
 audioToggle.addEventListener("touchstart", (e) => {
   e.preventDefault();
