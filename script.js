@@ -17,7 +17,6 @@ let lastTouchTime = 0;
 function startGame() {
   splashScreen.style.display = "none";
   gameContainer.style.display = "block";
-  gameStarted = true;
 
   bgm.currentTime = 0;
   if (!bgm.muted) {
@@ -25,29 +24,33 @@ function startGame() {
   }
 
   positionEggMessage();
+
+  // Delay per evitare click/touch fantasma
+  gameStarted = false;
+  setTimeout(() => {
+    activateEggListeners();
+    gameStarted = true;
+  }, 100);
 }
 
-// Riposiziona il messaggio se la finestra cambia dimensione
+// Riposiziona eggMessage
 window.addEventListener("resize", () => {
   if (gameContainer.style.display !== "none") {
     positionEggMessage();
   }
 });
 
-// Posiziona #egg-message 1vh sotto la GIF
 function positionEggMessage() {
   const trumpRect = trump.getBoundingClientRect();
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
   const newTop = trumpRect.bottom + scrollTop + window.innerHeight * 0.01;
-
   eggMessage.style.top = `${newTop}px`;
 }
 
-// Gestione click/touch sul gioco
+// Gestione lancio uova
 function handleEgg(event) {
   if (!gameStarted) return;
 
-  // Ignora click su bottoni
   if (
     event.target === resetBtn ||
     event.target === audioToggle ||
@@ -61,17 +64,14 @@ function handleEgg(event) {
   const y = event.clientY || (event.touches && event.touches[0].clientY);
   if (!x || !y) return;
 
-  // Splash visivo
   splash.style.left = `${x - 50}px`;
   splash.style.top = `${y - 50}px`;
   splash.style.opacity = 1;
   setTimeout(() => splash.style.opacity = 0, 400);
 
-  // Contatore
   eggCount++;
   eggCounter.textContent = `Eggsecutive Order x${eggCount}`;
 
-  // Se colpisce Trump
   const rect = trump.getBoundingClientRect();
   if (
     x >= rect.left && x <= rect.right &&
@@ -83,7 +83,7 @@ function handleEgg(event) {
   }
 }
 
-// Reset gioco
+// Reset
 function resetGame() {
   eggCount = 0;
   eggCounter.textContent = `Eggsecutive Order x${eggCount}`;
@@ -95,39 +95,49 @@ function resetGame() {
 
   bgm.pause();
   bgm.currentTime = 0;
-  trump.src = ""; // reset GIF
+
+  trump.src = "";
   trump.src = "trump.gif";
+
+  deactivateEggListeners();
 }
 
-// Mute toggle (audio in sync)
+// Audio toggle
 function toggleAudio() {
   bgm.muted = !bgm.muted;
   audioToggle.textContent = bgm.muted ? "🔇" : "🎵";
 }
 
-// Eventi
-splashScreen.addEventListener("click", startGame);
-splashScreen.addEventListener("touchstart", startGame);
+// Listener uova
+function activateEggListeners() {
+  document.addEventListener("touchstart", eggTouchHandler, { passive: true });
+  document.addEventListener("click", eggClickHandler);
+}
 
-// Gestione click/touch normale
-document.addEventListener("touchstart", (e) => {
+function deactivateEggListeners() {
+  document.removeEventListener("touchstart", eggTouchHandler, { passive: true });
+  document.removeEventListener("click", eggClickHandler);
+}
+
+function eggTouchHandler(e) {
   lastTouchTime = new Date().getTime();
   handleEgg(e);
-}, { passive: true });
+}
 
-document.addEventListener("click", (e) => {
+function eggClickHandler(e) {
   const now = new Date().getTime();
   if (now - lastTouchTime < 500) return;
   handleEgg(e);
-});
+}
 
-// Bottoni
+// Eventi
+splashScreen.addEventListener("click", startGame);
+splashScreen.addEventListener("touchstart", startGame);
 resetBtn.addEventListener("click", resetGame);
 resetBtn.addEventListener("touchstart", (e) => {
   e.preventDefault();
   resetGame();
 });
-
 audioToggle.addEventListener("click", toggleAudio);
 audioToggle.addEventListener("touchstart", (e) => {
   e.preventDefault();
