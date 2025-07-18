@@ -12,25 +12,29 @@ const audioToggle = document.getElementById("audio-toggle");
 let eggCount = 0;
 let gameStarted = false;
 let lastTouchTime = 0;
+let ignoreNextTap = false;
 
 // Avvio gioco
 function startGame() {
   splashScreen.style.display = "none";
   gameContainer.style.display = "block";
+  positionEggMessage();
 
   bgm.currentTime = 0;
   if (!bgm.muted) {
     bgm.play().catch(e => console.warn("Audio bloccato:", e));
   }
 
-  positionEggMessage();
+  deactivateEggListeners();
+  activateEggListeners();
 
-  // Delay per evitare click/touch fantasma
+  // Blocca splash involontario al primo click
   gameStarted = false;
+  ignoreNextTap = true;
   setTimeout(() => {
-    activateEggListeners();
     gameStarted = true;
-  }, 100);
+    ignoreNextTap = false;
+  }, 200);
 }
 
 // Riposiziona eggMessage
@@ -47,9 +51,9 @@ function positionEggMessage() {
   eggMessage.style.top = `${newTop}px`;
 }
 
-// Gestione lancio uova
+// Lancio uova
 function handleEgg(event) {
-  if (!gameStarted) return;
+  if (!gameStarted || ignoreNextTap) return;
 
   if (
     event.target === resetBtn ||
@@ -102,13 +106,13 @@ function resetGame() {
   deactivateEggListeners();
 }
 
-// Audio toggle
+// Mute toggle
 function toggleAudio() {
   bgm.muted = !bgm.muted;
   audioToggle.textContent = bgm.muted ? "🔇" : "🎵";
 }
 
-// Listener uova
+// Listener uovo
 function activateEggListeners() {
   document.addEventListener("touchstart", eggTouchHandler, { passive: true });
   document.addEventListener("click", eggClickHandler);
