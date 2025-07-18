@@ -1,0 +1,159 @@
+body {
+  margin: 0;
+  padding: 0;
+  cursor: url('egg.png') 16 16, auto;
+  background-color: black;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+}
+
+/* SPLASH SCREEN */
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 10;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#splash-screen h1 {
+  font-size: clamp(24px, 5vw, 48px);
+  color: white;
+  text-shadow: 2px 2px #ffaa00;
+  margin-bottom: 10px;
+}
+
+#splash-screen h2 {
+  font-size: clamp(18px, 3.5vw, 32px);
+  color: #ffaa00;
+  text-shadow: 1px 1px black;
+  font-style: italic;
+}
+
+/* GIOCO */
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 10vh 2vw 5vh 2vw;
+  gap: 1vh;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+#game-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+}
+
+#game-container h1 {
+  font-size: clamp(24px, 6vw, 48px);
+  color: white;
+  text-shadow: 2px 2px #ffaa00;
+  margin: 0;
+}
+
+#game-container h2 {
+  font-size: clamp(18px, 4vw, 32px);
+  color: #ffaa00;
+  text-shadow: 1px 1px black;
+  font-style: italic;
+  margin: 0;
+}
+
+#trump {
+  width: 80vw;
+  max-width: 600px;
+  height: auto;
+}
+
+#splash {
+  position: absolute;
+  width: 12vw;
+  max-width: 100px;
+  height: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+#egg-message {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(16px, 2vw, 24px);
+  color: #ffaa00;
+  text-shadow: 1px 1px #000;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+#egg-counter {
+  position: absolute;
+  top: 2vh;
+  right: 2vw;
+  font-size: clamp(16px, 2vw, 26px);
+  color: #ffaa00;
+  text-shadow: 1px 1px #000;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* Bottoni */
+#reset-button,
+#audio-toggle {
+  position: absolute;
+  bottom: 2vh;
+  font-size: 1.5vw;
+  padding: 8px 14px;
+  background-color: #ffaa00;
+  border: none;
+  border-radius: 6px;
+  color: black;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 2px 2px #000;
+  z-index: 5;
+}
+
+#reset-button {
+  left: 2vw;
+}
+
+#audio-toggle {
+  right: 2vw;
+}
+
+#reset-button:hover,
+#audio-toggle:hover {
+  background-color: #ffcc33;
+  transform: scale(1.05);
+}
+
+@media screen and (max-width: 600px) {
+
+  #reset-button,
+  #audio-toggle {
+    font-size: 3.5vw;
+    padding: 6px 10px;
+  }
+}

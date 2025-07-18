@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oval Office Omelette</title>
+  <link rel="icon" type="image/png" href="splash.png">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen">
+    <h1>Oval Office Omelette</h1>
+    <h2>🍳 Clicca per iniziare l'Eggsecution</h2>
+  </div>
+
+  <!-- GIOCO -->
+  <div id="game-container" style="display: none;">
+    <div id="game-content">
+      <h1>Oval Office Omelette</h1>
+      <h2>Make Eggs Great Again</h2>
+      <img src="trump.gif" id="trump" alt="Trump" />
+    </div>
+
+    <img src="splash.png" id="splash" alt="Splash" />
+    <div id="egg-message">Eggsecutive Order enforced.</div>
+    <div id="egg-counter">Eggsecutive Order x0</div>
+
+    <button id="reset-button">🔁 Reset Omelette</button>
+    <button id="audio-toggle">🎵</button>
+  </div>
+
+  <audio id="bgm" src="bgm.mp3" loop></audio>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
